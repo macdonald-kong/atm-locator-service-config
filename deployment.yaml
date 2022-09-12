@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atm-locator
+  namespace: finance
+  labels:
+    app: atm-locator
+    type: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atm-locator
+  template:
+    metadata:
+      labels:
+        app: atm-locator
+        type: backend
+    spec:
+      containers:
+      - name: atm-locator
+        image: davidmacdonaldkong/atm-locator-service:latest
+        readinessProbe:
+          httpGet:
+            path: /atms
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 5
+        ports:
+        - containerPort: 8080
